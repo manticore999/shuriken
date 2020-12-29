@@ -6,7 +6,7 @@ export let line = {
     y: canvas.height / 2,
     size: 50,
     theta: 0,
-    rotationSpeed: 0.05,
+    rotationSpeed: 0.1,
     speed: 10,
     rightCornerX: 0,
     rightCornerY: 0,
@@ -30,9 +30,9 @@ export let line = {
     },
 
     spin(){
-        pressedKeys.shift ? 
-        this.theta += 0:
-        this.theta += this.rotationSpeed;
+        if(pressedKeys.z) this.theta -= this.rotationSpeed
+        else if (pressedKeys.x) this.theta += this.rotationSpeed
+        else this.theta += 0
         this.rightCornerX = (this.x) + (this.size * Math.cos(this.theta))
         this.rightCornerY = (this.y) + (this.size * Math.sin(this.theta))
         this.leftCornerX = (this.x) - (this.size * Math.cos(this.theta))
@@ -40,22 +40,24 @@ export let line = {
     },
 
     move(){
-        if(pressedKeys.right) {
-            this.x += this.speed;
-            if (this.x + this.size >= canvas.width) this.x = canvas.width - this.size;
+        const vec = { x: 0, y: 0 }
+        if (pressedKeys.right) vec.x += 1
+        if (pressedKeys.left) vec.x -= 1
+        if (pressedKeys.down) vec.y += 1
+        if (pressedKeys.up) vec.y -= 1
+        const m = Math.sqrt((vec.x * vec.x) + (vec.y * vec.y))
+        if (m !== 0) {
+          vec.x /= m
+          vec.y /= m
         }
-        if(pressedKeys.left) {
-            this.x -= this.speed;
-            if (this.x <= 0) this.x = 0;
-        }
-        if(pressedKeys.down) {
-            this.y += this.speed;
-            if (this.y + this.size >= canvas.height) this.y = canvas.height - this.size;
-        }
-        if(pressedKeys.up) {
-            this.y -= this.speed;
-            if (this.y <= 0) this.y = 0;
-        }
+
+        this.x += this.speed * vec.x
+        this.y += this.speed * vec.y
+        if (this.x + this.size >= canvas.width) this.x = canvas.width - this.size;
+        if (this.x <= 0) this.x = 0;
+        if (this.y + this.size >= canvas.height) this.y = canvas.height - this.size;
+        if (this.y <= 0) this.y = 0;
+
     },
 
     collision(ctx){

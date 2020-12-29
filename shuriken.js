@@ -15,12 +15,7 @@ export class Enemy {
       this.speed = 1;
       this.collision = false;
       this.circle = new Path2D();
-      this.triangles = {
-        left: new Path2D(),
-        right: new Path2D(),
-        up: new Path2D(),
-        down: new Path2D(),
-      }
+      this.triangles = new Path2D();
     }
 
     update(ctx){
@@ -28,28 +23,28 @@ export class Enemy {
         this.draw(ctx)
     }
 
-    triangleLeft(ctx){
-      this.triangles.left.moveTo(-this.size * 3, 0);
-      this.triangles.left.lineTo(0, 0 - this.size);
-      this.triangles.left.lineTo(0, 0 + this.size);
+    triangleLeft(){
+      this.triangles.moveTo(-this.size * 3, 0);
+      this.triangles.lineTo(0, 0 - this.size);
+      this.triangles.lineTo(0, 0 + this.size);
     }
 
-    triangleRight(ctx){
-      this.triangles.right.moveTo(this.size * 3, 0);
-      this.triangles.right.lineTo(0, 0 - this.size);
-      this.triangles.right.lineTo(0, 0 + this.size);
+    triangleRight(){
+      this.triangles.moveTo(this.size * 3, 0);
+      this.triangles.lineTo(0, 0 - this.size);
+      this.triangles.lineTo(0, 0 + this.size);
     }
 
-    triangleUp(ctx){
-      this.triangles.up.moveTo(0, -this.size * 3);
-      this.triangles.up.lineTo(0 - this.size, 0);
-      this.triangles.up.lineTo(0 + this.size, 0);
+    triangleUp(){
+      this.triangles.moveTo(0, -this.size * 3);
+      this.triangles.lineTo(0 - this.size, 0);
+      this.triangles.lineTo(0 + this.size, 0);
     }
 
-    triangleDown(ctx){
-      this.triangles.down.moveTo(this.size * 3, 0);
-      this.triangles.down.lineTo(0, 0 - this.size);
-      this.triangles.down.lineTo(0, 0 + this.size);
+    triangleDown(){
+      this.triangles.moveTo(this.size * 3, 0);
+      this.triangles.lineTo(0, 0 - this.size);
+      this.triangles.lineTo(0, 0 + this.size);
     }
 
     drawTriangle(triangle, ctx){
@@ -58,6 +53,12 @@ export class Enemy {
       ctx.fill(triangle);
       triangle.closePath();
       ctx.stroke(triangle);
+    }
+    
+    create(){
+      this.triangles = new Path2D();
+      this.triangleLeft()
+      this.triangleRight()
     }
 
     move(){
@@ -75,21 +76,18 @@ export class Enemy {
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle * Math.PI / 180);
 
-        this.triangleLeft()
-        this.triangleRight()
-        this.drawTriangle(this.triangles.left, ctx)
-        this.drawTriangle(this.triangles.right, ctx)
+        this.drawTriangle(this.triangles, ctx)
+        this.drawTriangle(this.triangles, ctx)
 
+        this.circle = new Path2D()
         ctx.fillStyle = this.color1;
         this.circle.arc(0, 0, this.size, 0, Math.PI * 2);
         ctx.fill(this.circle);
         this.circle.closePath();
         ctx.stroke(this.circle);
 
-        this.collision = (ctx.isPointInPath(this.triangles.left, line.leftCornerX, line.leftCornerY) ||
-        ctx.isPointInPath(this.triangles.left, line.rightCornerX, line.rightCornerX) ||
-        ctx.isPointInPath(this.triangles.right, line.leftCornerX, line.leftCornerY) ||
-        ctx.isPointInPath(this.triangles.right, line.rightCornerX, line.rightCornerX)) &&
+        this.collision = (ctx.isPointInPath(this.triangles, line.leftCornerX, line.leftCornerY) ||
+        ctx.isPointInPath(this.triangles, line.rightCornerX, line.rightCornerX)) &&
         (!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerX) ||
         !ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerX))
 
@@ -101,6 +99,7 @@ export class Enemy {
   function spawnEnemies(){
     for(let i = 0; i < enemyNum; i++){
       enemies.push(new Enemy())
+      enemies[i].create()
     }
   }
   spawnEnemies()
