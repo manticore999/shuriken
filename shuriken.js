@@ -88,8 +88,8 @@ export class Enemy {
 
         this.collision = (ctx.isPointInPath(this.triangles, line.leftCornerX, line.leftCornerY) ||
         ctx.isPointInPath(this.triangles, line.rightCornerX, line.rightCornerX)) &&
-        (!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerX) ||
-        !ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerX))
+        (!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerY) ||
+        !ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerY))
 
         ctx.restore();
     }

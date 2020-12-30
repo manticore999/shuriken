@@ -3,7 +3,8 @@ export const pressedKeys = {
     left: false,
     right: false,
     down: false,
-    space: false,
+    z: false,
+    x: false,
   
     down_handler (key = '') {
       this[key.replace('Arrow', '').toLowerCase()] = true
@@ -11,8 +12,8 @@ export const pressedKeys = {
       this[key.replace("a","left").toLowerCase()] = true
       this[key.replace("s","down").toLowerCase()] = true
       this[key.replace("d","right").toLowerCase()] = true
-      this[key.replace("z","j").toLowerCase()] = true
-      this[key.replace("x","k").toLowerCase()] = true
+      this[key.replace("j","z").toLowerCase()] = true
+      this[key.replace("k","x").toLowerCase()] = true
     },
     up_handler (key = '') {
       this[key.replace('Arrow', '').toLowerCase()] = false
@@ -20,8 +21,8 @@ export const pressedKeys = {
       this[key.replace("a","left").toLowerCase()] = false
       this[key.replace("s","down").toLowerCase()] = false
       this[key.replace("d","right").toLowerCase()] = false
-      this[key.replace("z","j").toLowerCase()] = false
-      this[key.replace("x","k").toLowerCase()] = false
+      this[key.replace("j","z").toLowerCase()] = false
+      this[key.replace("k","x").toLowerCase()] = false
     }
   }
   

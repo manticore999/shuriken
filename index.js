@@ -5,8 +5,8 @@ import { updateEnemies } from './shuriken.js'
 import { line } from './line.js'
 
     function update(){
-        ctx.canvas.height = window.innerHeight
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "Bisque"
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         updateEnemies(ctx)
         line.update(ctx)
         window.requestAnimationFrame(update);
