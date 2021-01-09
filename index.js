@@ -11,4 +11,4 @@ import { line } from './line.js'
         line.update(ctx)
         window.requestAnimationFrame(update);
     }
-    window.requestAnimationFrame(update);
+    update()

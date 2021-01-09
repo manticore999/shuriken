@@ -52,6 +52,7 @@ export class Enemy {
       ctx.fillStyle = this.color2;
       ctx.fill(triangle);
       triangle.closePath();
+      ctx.lineWidth = 1;
       ctx.stroke(triangle);
     }
     
