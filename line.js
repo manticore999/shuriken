@@ -53,14 +53,14 @@ export let line = {
 
         this.x += this.speed * vec.x
         this.y += this.speed * vec.y
-        if (this.x + this.size >= canvas.width) this.x = canvas.width - this.size;
+        if (this.x >= canvas.width) this.x = canvas.width
         if (this.x <= 0) this.x = 0;
-        if (this.y + this.size >= canvas.height) this.y = canvas.height - this.size;
+        if (this.y >= canvas.height) this.y = canvas.height;
         if (this.y <= 0) this.y = 0;
 
     },
 
-    collision(ctx){
+    collision(){
         for (const enemy of enemies){
             if (enemy.collision) {
                 console.log("colision")

@@ -1,8 +1,9 @@
-const { createServer } = require("http")
-const { readFileSync } = require("fs")
-
-createServer((req, res) => {
-  res.write(readFileSync("./index.html", { encoding: "utf8" }))
-  res.end()
-})
-.listen(8080)
+var express = require("express"); 
+var app = express(); 
+var path = require("path"); 
+app.get('/',function(req,res){ 
+  res.sendFile(path.join(__dirname+'/index.html')); 
+  //__dirname : It will resolve to your project folder. 
+}); 
+app.listen(3000); 
+console.log("Server running at Port 3000"); 
