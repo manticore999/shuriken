@@ -63,10 +63,10 @@ export class Enemy {
     }
 
     move(){
-      this.x = line.x - this.x
-      this.y = line.y - this.y
       this.x += this.velX
       this.y += this.velY
+      this.x = line.x - this.x
+      this.y = line.y - this.y
       if (this.x >= canvas.width - this.size || this.x <= this.size) this.velX *= -1;
       if (this.y >= canvas.height - this.size || this.y <= this.size) this.velY *= -1;
     }
