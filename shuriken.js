@@ -1,11 +1,12 @@
 import { line } from './line.js'
-import { pressedKeys } from './input.js'
-import { area } from './area.js'
+import { move } from './move.js'
+import { areas } from './area.js'
 
+const area = areas[0]
 export const enemies = [];
-let enemyNum = 10;
+let enemyNum = 1;
 
-export class Enemy {
+class Enemy {
     constructor(){
       this.x = Math.random() * area.width + area.x;
       this.y = Math.random() * area.height + area.y;
@@ -24,7 +25,7 @@ export class Enemy {
     }
 
     update(ctx){
-        this.move()
+        this.sMove()
         this.draw(ctx)
     }
 
@@ -75,27 +76,13 @@ export class Enemy {
       this.velY = Math.sin(angle) * this.moveSpeed;
     }
 
-    move(){
-      const lineSpeed = line.set()
-      const vec = { x: 0, y: 0 }
-
-      if (pressedKeys.right) vec.x -= 1
-      if (pressedKeys.left) vec.x += 1
-      if (pressedKeys.down) vec.y -= 1
-      if (pressedKeys.up) vec.y += 1
-      
-      const m = Math.sqrt((vec.x * vec.x) + (vec.y * vec.y))
-
-      if (m !== 0) {
-        vec.x /= m
-        vec.y /= m
-      }
-
-      this.x += lineSpeed.move * vec.x
-      this.y += lineSpeed.move * vec.y
+    sMove(){
+      const m = move()
+      this.x += m.x
+      this.y += m.y
 
       if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1;
-      if(this.y + this.size >= area.y + area.width || this.y - this.size <= area.y) this.velY *= -1;
+      if(this.y + this.size >= area.y + area.height || this.y - this.size <= area.y) this.velY *= -1;
       this.x += this.velX;
       this.y += this.velY;
     }
