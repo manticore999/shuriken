@@ -1,16 +1,14 @@
 import { line } from './line.js'
 import { pressedKeys } from './input.js'
-import { areaW, areaH } from './index.js'
+import { area } from './area.js'
 
 export const enemies = [];
 let enemyNum = 10;
 
 export class Enemy {
     constructor(){
-      this.x = Math.random() * 2000;
-      this.y = Math.random() * 500;
-      // this.x = Math.random() * areaW;
-      // this.y = Math.random() * areaH;
+      this.x = Math.random() * area.width + area.x;
+      this.y = Math.random() * area.height + area.y;
       this.size = 50;
       this.triangleSize = 5
       this.color1 = "black";
@@ -79,7 +77,6 @@ export class Enemy {
 
     move(){
       const lineSpeed = line.set()
-      console.log(lineSpeed)
       const vec = { x: 0, y: 0 }
 
       if (pressedKeys.right) vec.x -= 1
@@ -97,8 +94,8 @@ export class Enemy {
       this.x += lineSpeed.move * vec.x
       this.y += lineSpeed.move * vec.y
 
-      if(this.x + this.size >= 2000 || this.x - this.size <= 0) this.velX *= -1;
-      if(this.y + this.size >= 500 || this.y - this.size <= 0) this.velY *= -1;
+      if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1;
+      if(this.y + this.size >= area.y + area.width || this.y - this.size <= area.y) this.velY *= -1;
       this.x += this.velX;
       this.y += this.velY;
     }

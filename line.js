@@ -1,5 +1,6 @@
 import { pressedKeys } from './input.js'
 import { enemies } from './shuriken.js'
+import { area } from './area.js'
 
 export let line = {
     x: canvas.width / 2,
@@ -24,7 +25,7 @@ export let line = {
           spin: this.spinSpeed,
           move: this.moveSpeed
         }
-  
+
         if(pressedKeys.shift){
           speed.spin = this.spinSpeed / 2
           speed.move = this.moveSpeed / 2

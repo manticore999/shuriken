@@ -1,4 +1,8 @@
-* {margin: 0; position: absolute;}
+* {
+  margin: 0;
+  position: absolute;
+  overflow: hidden;
+}
 /* .example::-webkit-scrollbar {
     display: none;
   } */
