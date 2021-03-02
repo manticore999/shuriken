@@ -24,27 +24,27 @@ export class Enemy {
     }
 
     triangleLeft(){
-      this.triangles.moveTo((-this.size * 3) - line.x, 0 - line.y);
-      this.triangles.lineTo(0 - line.x, (0 - this.size) - line.y);
-      this.triangles.lineTo(0 - line.x, (0 + this.size) - line.y);
+      this.triangles.moveTo((-this.size * 3), 0);
+      this.triangles.lineTo(0, (0 - this.size));
+      this.triangles.lineTo(0, (0 + this.size));
     }
 
     triangleRight(){
-      this.triangles.moveTo((this.size * 3) - line.x, 0 - line.y);
-      this.triangles.lineTo(0 - line.x, (0 - this.size) - line.y);
-      this.triangles.lineTo(0 - line.x, (0 + this.size) - line.y);
+      this.triangles.moveTo((this.size * 3), 0);
+      this.triangles.lineTo(0, (0 - this.size));
+      this.triangles.lineTo(0, (0 + this.size));
     }
 
     triangleUp(){
-      this.triangles.moveTo(0 - line.x, (-this.size * 3) - line.y);
-      this.triangles.lineTo((0 - this.size) - line.x, 0 - line.y);
-      this.triangles.lineTo((0 + this.size) - line.x, 0 - line.y);
+      this.triangles.moveTo(0, (-this.size * 3));
+      this.triangles.lineTo((0 - this.size), 0);
+      this.triangles.lineTo((0 + this.size), 0);
     }
 
     triangleDown(){
-      this.triangles.moveTo(0 - line.x, (this.size * 3) - line.y);
-      this.triangles.lineTo((0 - this.size) - line.x, 0 - line.y);
-      this.triangles.lineTo((0 + this.size) - line.x, 0 - line.y);
+      this.triangles.moveTo(0, (this.size * 3));
+      this.triangles.lineTo((0 - this.size), 0);
+      this.triangles.lineTo((0 + this.size), 0);
     }
 
     drawTriangle(triangle, ctx){
@@ -75,7 +75,7 @@ export class Enemy {
         this.angle += this.speed;
         ctx.save();
 
-        ctx.translate(this.x - line.x, this.y - line.y);
+        ctx.translate(this.x, this.y);
         ctx.rotate(this.angle * Math.PI / 180);
 
         this.drawTriangle(this.triangles, ctx)
@@ -83,7 +83,7 @@ export class Enemy {
 
         this.circle = new Path2D()
         ctx.fillStyle = this.color1;
-        this.circle.arc(0 - line.x, 0 - line.y, this.size, 0, Math.PI * 2);
+        this.circle.arc(0, 0, this.size, 0, Math.PI * 2);
         ctx.fill(this.circle);
         this.circle.closePath();
         ctx.stroke(this.circle);
