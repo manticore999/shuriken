@@ -5,9 +5,9 @@ export let line = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     size: 50,
+    moveSpeed: 10,
     theta: 0,
-    rotationSpeed: 0.1,
-    speed: 10,
+    spinSpeed: 0.1,
     rightCornerX: 0,
     rightCornerY: 0,
     leftCornerX: 0,
@@ -16,8 +16,26 @@ export let line = {
     update(ctx){
         this.draw(ctx)
         this.spin()
-        this.move()
         this.collision(ctx)
+    },
+
+    set(){
+        let speed = {
+          spin: this.spinSpeed,
+          move: this.moveSpeed
+        }
+  
+        if(pressedKeys.shift){
+          speed.spin = this.spinSpeed / 2
+          speed.move = this.moveSpeed / 2
+        }
+
+        else if(!pressedKeys.shift){
+          speed.spin = this.spinSpeed
+          speed.move = this.moveSpeed
+        }
+  
+        return speed
     },
 
     draw(ctx){
@@ -30,34 +48,15 @@ export let line = {
     },
 
     spin(){
-        if(pressedKeys.z) this.theta -= this.rotationSpeed
-        else if (pressedKeys.x) this.theta += this.rotationSpeed
+        const lineSpeed = line.set()
+        if(pressedKeys.z) this.theta -= lineSpeed.spin
+        else if (pressedKeys.x) this.theta += lineSpeed.spin
         else this.theta += 0
+
         this.rightCornerX = (this.x) + (this.size * Math.cos(this.theta))
         this.rightCornerY = (this.y) + (this.size * Math.sin(this.theta))
         this.leftCornerX = (this.x) - (this.size * Math.cos(this.theta))
         this.leftCornerY = (this.y) - (this.size * Math.sin(this.theta))
-    },
-
-    move(){
-        const vec = { x: 0, y: 0 }
-        if (pressedKeys.right) vec.x += 1
-        if (pressedKeys.left) vec.x -= 1
-        if (pressedKeys.down) vec.y += 1
-        if (pressedKeys.up) vec.y -= 1
-        const m = Math.sqrt((vec.x * vec.x) + (vec.y * vec.y))
-        if (m !== 0) {
-          vec.x /= m
-          vec.y /= m
-        }
-
-        this.x += this.speed * vec.x
-        this.y += this.speed * vec.y
-        if (this.x >= canvas.width) this.x = canvas.width
-        if (this.x <= 0) this.x = 0;
-        if (this.y >= canvas.height) this.y = canvas.height;
-        if (this.y <= 0) this.y = 0;
-
     },
 
     collision(){
