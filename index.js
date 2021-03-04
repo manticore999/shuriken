@@ -38,7 +38,7 @@ ctx.canvas.height *= window.devicePixelRatio
 function update(){
     ctx.fillStyle = "Blue"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    updateAreas(ctx)
+    if (line.created) updateAreas(ctx)
     updateEnemies(ctx)
     line.update(ctx)
     window.requestAnimationFrame(update);

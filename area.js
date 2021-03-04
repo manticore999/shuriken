@@ -39,7 +39,6 @@ class Area {
     }
 
     aMove(){
-        // console.log("a")
         const m = move()
         this.x += m.x
         this.y += m.y
@@ -48,7 +47,7 @@ class Area {
         const maxX = Math.max(line.leftCornerX, line.rightCornerX)
         const minY = Math.min(line.leftCornerY, line.rightCornerY)
         const maxY = Math.max(line.leftCornerY, line.rightCornerY)
-        // console.log(this.x, minX)
+        // console.log(this.x, minX, minX <= this.x - this.safeZoneWidth)
         if(minX <= this.x - this.safeZoneWidth) this.x = minX + this.safeZoneWidth
         if(maxX >= this.x + this.width + this.safeZoneWidth) this.x = maxX - this.width - this.safeZoneWidth
         if(minY <= this.y) this.y = minY

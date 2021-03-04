@@ -12,11 +12,13 @@ export let line = {
     rightCornerY: 0,
     leftCornerX: 0,
     leftCornerY: 0,
+    created: false,
 
     update(ctx){
-        this.draw(ctx)
         this.spin()
+        this.draw(ctx)
         this.collision(ctx)
+        if(!this.created) this.created = true
     },
 
     set(){
@@ -44,6 +46,7 @@ export let line = {
         ctx.lineTo(this.leftCornerX, this.leftCornerY);
         ctx.lineWidth = 10;
         ctx.closePath();
+        ctx.strokeStyle = "black"
         ctx.stroke();
     },
 
@@ -62,7 +65,8 @@ export let line = {
     collision(){
         for (const enemy of enemies){
             if (enemy.collision) {
-                // this.moveSpeed = 0
+                this.moveSpeed = 0
+                // console.log("collision")
             }
         }
     }
