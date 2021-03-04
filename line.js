@@ -62,7 +62,7 @@ export let line = {
     collision(){
         for (const enemy of enemies){
             if (enemy.collision) {
-                // console.log("colision")
+                // this.moveSpeed = 0
             }
         }
     }

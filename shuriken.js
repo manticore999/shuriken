@@ -8,9 +8,9 @@ let enemyNum = 1;
 
 class Enemy {
     constructor(){
-      this.x = Math.random() * area.width + area.x;
-      this.y = Math.random() * area.height + area.y;
-      this.size = 50;
+      this.x = Math.random() * (area.width) + area.x;
+      this.y = Math.random() * (area.height) + area.y;
+      this.size = 100;
       this.triangleSize = 5
       this.color1 = "black";
       this.color2 = "red";
@@ -77,14 +77,26 @@ class Enemy {
     }
 
     sMove(){
+      const minX = Math.min(line.leftCornerX, line.rightCornerX)
+      const maxX = Math.max(line.leftCornerX, line.rightCornerX)
+      const minY = Math.min(line.leftCornerY, line.rightCornerY)
+      const maxY = Math.max(line.leftCornerY, line.rightCornerY)
+
       const m = move()
-      this.x += m.x
-      this.y += m.y
+      if(minX > area.x - area.safeZoneWidth && maxX < area.x + area.width + area.safeZoneWidth) this.x += m.x
+      if(minY > area.y && maxY < area.y + area.height) this.y += m.y
+      
+      this.x += this.velX;
+      this.y += this.velY;
 
       if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1;
       if(this.y + this.size >= area.y + area.height || this.y - this.size <= area.y) this.velY *= -1;
-      this.x += this.velX;
-      this.y += this.velY;
+      
+      // if(this.x - this.size <= 0) this.x = this.size
+      // if(this.x + this.size >= area.x + area.width) this.x = area.x + area.width - this.size
+      // if(this.y - this.size <= 0) this.y = this.size
+      // if(this.y + this.size >= area.y + area.height) this.x = area.y + area.height - this.size
+      // console.log(this.x, area.x, this.y, area.y)
     }
 
     draw(ctx){
@@ -105,10 +117,13 @@ class Enemy {
 
         this.collision = 
           (ctx.isPointInPath(this.triangles, line.leftCornerX, line.leftCornerY) ||
-          ctx.isPointInPath(this.triangles, line.rightCornerX, line.rightCornerX)) &&
+          ctx.isPointInPath(this.triangles, line.rightCornerX, line.rightCornerY)) &&
           (!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerY) ||
           !ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerY))
-
+          console.log((ctx.isPointInPath(this.triangles, line.leftCornerX, line.leftCornerY) ||
+          ctx.isPointInPath(this.triangles, line.rightCornerX, line.rightCornerY)),
+          (!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerY) ||
+          !ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerY)))
         ctx.restore();
     }
     

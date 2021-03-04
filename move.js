@@ -16,7 +16,6 @@ export function move(){
         vec.x /= m
         vec.y /= m
     }
-    console.log(this.x, lineSpeed.move * vec.x)
-    this.x += lineSpeed.move * vec.x
-    this.y += lineSpeed.move * vec.y
+
+    return { x: lineSpeed.move * vec.x, y: lineSpeed.move * vec.y}
 }
