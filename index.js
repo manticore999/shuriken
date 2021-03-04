@@ -18,14 +18,14 @@ export function scaler(canvas) {
     window.scale = scale;
 
     for(const area of areas){
-        area.x = 1000
+        area.x = canvas.width / 2 + area.safeZoneWidth - line.size
         area.y = (canvas.height - area.height) / 2
     }
 
     for(const shuriken of enemies){
         const area = areas[0]
-        shuriken.x = Math.random() * (area.width) + area.x;
-        shuriken.y = Math.random() * (area.height) + area.y;
+        shuriken.x = Math.random() * (area.width - shuriken.size * 2) + area.x + shuriken.size;
+        shuriken.y = Math.random() * (area.height - shuriken.size * 2) + area.y + shuriken.size;
     }
 }
 scaler(canvas)

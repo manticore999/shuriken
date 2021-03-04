@@ -5,6 +5,7 @@ export let line = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     size: 50,
+    width: 10,
     moveSpeed: 10,
     theta: 0,
     spinSpeed: 0.1,
@@ -44,7 +45,7 @@ export let line = {
         ctx.beginPath();
         ctx.moveTo(this.rightCornerX, this.rightCornerY);
         ctx.lineTo(this.leftCornerX, this.leftCornerY);
-        ctx.lineWidth = 10;
+        ctx.lineWidth = this.width;
         ctx.closePath();
         ctx.strokeStyle = "black"
         ctx.stroke();
