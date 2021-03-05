@@ -6,7 +6,7 @@ export let line = {
     y: canvas.height / 2,
     size: 50,
     width: 10,
-    moveSpeed: 10,
+    moveSpeed: 15,
     theta: 0,
     spinSpeed: 0.1,
     rightCornerX: 0,

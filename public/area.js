@@ -50,8 +50,8 @@ class Area {
 
         if(minX <= this.x - this.safeZoneWidth) this.x = minX + this.safeZoneWidth
         if(maxX >= this.x + this.width + this.safeZoneWidth) this.x = maxX - this.width - this.safeZoneWidth
-        if(minY - line.width / 2 <= this.y) this.y = minY - line.width / 2
-        if(maxY + line.width / 2 >= this.y + this.height) this.y = maxY - this.height + line.width / 2
+        if(minY <= this.y) this.y = minY
+        if(maxY >= this.y + this.height) this.y = maxY - this.height
     }
 }
 

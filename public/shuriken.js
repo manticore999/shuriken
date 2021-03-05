@@ -17,7 +17,6 @@ class Triangle {
 	}
 
 	draw(ctx) {
-		this.path = new Path2D()
 		ctx.beginPath();
 		this.path.moveTo(this.circSize * this.size * Math.cos(this.dir), this.circSize * this.size * Math.sin(this.dir));
 		this.path.lineTo(this.circSize * (Math.cos(this.dir - this.width)), this.circSize * (Math.sin(this.dir - this.width)));
@@ -81,12 +80,19 @@ class Enemy {
 
 		if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1;
 		if(this.y + this.size >= area.y + area.height || this.y - this.size <= area.y) this.velY *= -1;
-		console.log(this.y, this.size, area.y, area.height, this.y, this.size, area.y, this.velY)
+
 		this.x += this.velX;
 		this.y += this.velY;
-
-		// console.log(this.velX, this.velY)
     }
+
+	isColliding(ctx){
+		const collision = 
+			(ctx.isPointInPath(this.trianlgePath, line.leftCornerX, line.leftCornerY) ||
+			ctx.isPointInPath(this.trianlgePath, line.rightCornerX, line.rightCornerY)) &&
+			(!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerY) &&
+			!ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerY))
+		return collision
+	}
 
     draw(ctx){
         this.angle += this.spinSpeed;
@@ -94,9 +100,7 @@ class Enemy {
         ctx.translate(this.x, this.y);
         ctx.rotate(this.angle * Math.PI / 180);
 
-        // this.trianlgePath = new Path2D()
         for (const triangle of this.triangles) triangle.draw(ctx)
-        // console.log(this.trianlgePath)
 
         this.circle = new Path2D()
         ctx.fillStyle = this.color;
@@ -105,21 +109,20 @@ class Enemy {
         this.circle.closePath();
         ctx.stroke(this.circle);
 
-        this.collision = 
-			(ctx.isPointInPath(this.trianlgePath, line.leftCornerX, line.leftCornerY) ||
-			ctx.isPointInPath(this.trianlgePath, line.rightCornerX, line.rightCornerY)) &&
-			(!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerY) &&
-			!ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerY))
-			// console.log(this.collision)
+        this.collision = this.isColliding(ctx)
+		
         ctx.restore();
+		for (const triangle of this.triangles) this.trianlgePath.path = new Path2D()
+		this.trianlgePath = new Path2D()
     }
     
 }
 
 for(let i = 0; i < enemyNum; i++){
-	enemies.push(new Enemy())
-	enemies[i].createTriangles()
-	enemies[i].direction()
+	const newEnemy = new Enemy()
+	newEnemy.createTriangles()
+	newEnemy.direction()
+	enemies.push(newEnemy)
 }
 
 export function updateEnemies(ctx){
