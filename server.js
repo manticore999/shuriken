@@ -14,20 +14,17 @@ app.get('/', async (req, res) => {
 })
 
 wss.on('connection', function connection(ws) {
+  console.log("a")
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
-  });
+});
 
   ws.send('something');
 });
 
-// wss.on('connection', function connection(ws) {
-//   ws.on('message', function incoming(message) {
-//     console.log('received: %s', message);
-//   });
-
-//   ws.send('something');
-// });
+wss.on('open', () => {
+  wss.send('Hello');
+});
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`)

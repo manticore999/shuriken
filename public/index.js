@@ -1,5 +1,4 @@
 // import ws from 'ws';
-import { enemies, updateEnemies } from './shuriken.js'
 import { line } from './line.js'
 import { updateAreas, areas } from './area.js'
 
@@ -26,12 +25,7 @@ export function scaler(canvas) {
     for(const area of areas){
         area.x = canvas.width / 2 + area.safeZoneWidth - line.size
         area.y = (canvas.height - area.height) / 2
-    }
-
-    for(const shuriken of enemies){
-        const area = areas[0]
-        shuriken.x = Math.random() * (area.width - shuriken.size * 2) + area.x + shuriken.size;
-        shuriken.y = Math.random() * (area.height - shuriken.size * 2) + area.y + shuriken.size;
+        area.spawner()
     }
 }
 scaler(canvas)
@@ -45,7 +39,6 @@ function update(){
     ctx.fillStyle = "Blue"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     if (line.created) updateAreas(ctx)
-    updateEnemies(ctx)
     line.update(ctx)
     window.requestAnimationFrame(update);
 }

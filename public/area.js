@@ -1,8 +1,10 @@
 import { move } from './move.js'
 import { line } from './line.js'
+import { Enemy, updateEnemies } from './shuriken.js'
 
 const areaNum = 1
 export const areas = []
+export const enemies = [];
 
 class Area {
     constructor(){
@@ -11,6 +13,7 @@ class Area {
         this.x = (canvas.width - this.width) / 2
         this.y = (canvas.height - this.height) / 2
         this.safeZoneWidth = 200
+        this.enemyNum = 1
     }
 
     update(ctx){
@@ -53,14 +56,26 @@ class Area {
         if(minY <= this.y) this.y = minY
         if(maxY >= this.y + this.height) this.y = maxY - this.height
     }
+
+    spawner(){
+        for(let i = 0; i < this.enemyNum; i++){
+            const newEnemy = new Enemy(this.x, this.y, this.width, this.height, 50, 3, 2, 0.5, 2)
+            newEnemy.createTriangles()
+            newEnemy.direction()
+            enemies.push(newEnemy)
+        }
+    }
 }
 
 for (let i = 0; i < areaNum; i++){
-    areas.push(new Area())
+    let newArea = new Area()
+    newArea.spawner()
+    areas.push(newArea)
 }
 
 export function updateAreas(ctx){
     for(const area of areas){
         area.update(ctx)
+        updateEnemies(ctx, area)
     }
 }

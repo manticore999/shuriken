@@ -1,10 +1,6 @@
 import { line } from './line.js'
 import { move } from './move.js'
-import { areas } from './area.js'
-
-const area = areas[0]
-export const enemies = [];
-let enemyNum = 0;
+import { enemies } from './area.js'
 
 class Triangle {
 	constructor(path, circSize, dir) {
@@ -27,26 +23,27 @@ class Triangle {
 	}
 }
 
-class Enemy {
-    constructor(){
-		this.size = 100;
-		this.x = Math.random() * (area.width - this.size * 2) + area.x + this.size;
-		this.y = Math.random() * (area.height - this.size * 2) + area.y + this.size;
+export class Enemy {
+    constructor(areaX, areaY, areaWidth, areaHeight, size, triangleSize, spinSpeed, moveSpeed, triangleNum){
+		this.size = size;
+		this.x = Math.random() * (areaWidth - this.size * 2) + areaX + this.size;
+		this.y = Math.random() * (areaHeight - this.size * 2) + areaY + this.size;
 		this.color = "black";
 		this.angle = 0;
 		this.velX = 0;
 		this.velY = 0;
-		this.spinSpeed = 0.5;
-		this.moveSpeed = 2;
+		this.spinSpeed = spinSpeed;
+		this.moveSpeed = moveSpeed;
 		this.collision = false;
 		this.circle = new Path2D();
 		this.trianlgePath = new Path2D();
 		this.triangles = [];
-		this.triangleNum = 0;
+		this.triangleNum = triangleNum;
+		this.triangleSize = triangleSize;
     }
 
-    update(ctx){
-        this.sMove()
+    update(ctx, area){
+        this.sMove(area)
         this.draw(ctx)
     }
 
@@ -67,7 +64,7 @@ class Enemy {
 		this.velY = Math.sin(angle) * this.moveSpeed;
     }
 
-    sMove(){
+    sMove(area){
 		const minX = Math.min(line.leftCornerX, line.rightCornerX)
 		const maxX = Math.max(line.leftCornerX, line.rightCornerX)
 		const minY = Math.min(line.leftCornerY, line.rightCornerY)
@@ -118,15 +115,8 @@ class Enemy {
     
 }
 
-for(let i = 0; i < enemyNum; i++){
-	const newEnemy = new Enemy()
-	newEnemy.createTriangles()
-	newEnemy.direction()
-	enemies.push(newEnemy)
-}
-
-export function updateEnemies(ctx){
+export function updateEnemies(ctx, area){
 	for(let i = 0; i < enemies.length; i++){
-		enemies[i].update(ctx)
+		enemies[i].update(ctx, area)
 	}
 }

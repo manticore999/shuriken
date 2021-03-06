@@ -1,5 +1,5 @@
 import { pressedKeys } from './input.js'
-import { enemies } from './shuriken.js'
+import { enemies } from './area.js'
 
 export let line = {
     x: canvas.width / 2,
