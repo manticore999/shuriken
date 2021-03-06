@@ -4,7 +4,7 @@ import { areas } from './area.js'
 
 const area = areas[0]
 export const enemies = [];
-let enemyNum = 1;
+let enemyNum = 0;
 
 class Triangle {
 	constructor(path, circSize, dir) {
@@ -29,7 +29,6 @@ class Triangle {
 
 class Enemy {
     constructor(){
-		console.log(area.width, area.x)
 		this.size = 100;
 		this.x = Math.random() * (area.width - this.size * 2) + area.x + this.size;
 		this.y = Math.random() * (area.height - this.size * 2) + area.y + this.size;
@@ -43,7 +42,7 @@ class Enemy {
 		this.circle = new Path2D();
 		this.trianlgePath = new Path2D();
 		this.triangles = [];
-		this.triangleNum = 2;
+		this.triangleNum = 0;
     }
 
     update(ctx){
@@ -110,9 +109,10 @@ class Enemy {
         ctx.stroke(this.circle);
 
         this.collision = this.isColliding(ctx)
-		
+		console.log()
         ctx.restore();
-		for (const triangle of this.triangles) this.trianlgePath.path = new Path2D()
+
+		for (const triangle of this.triangles) triangle.path = new Path2D()
 		this.trianlgePath = new Path2D()
     }
     

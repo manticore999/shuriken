@@ -1,9 +1,15 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-
+// import ws from 'ws';
 import { enemies, updateEnemies } from './shuriken.js'
 import { line } from './line.js'
 import { updateAreas, areas } from './area.js'
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const ws = new WebSocket('ws://localhost:3001');
+
+// ws.on('open', () => {
+//   ws.send('Hello');
+// });
 
 export function scaler(canvas) {
     // const bound = canvas.getBoundingClientRect()
