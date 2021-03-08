@@ -13,17 +13,24 @@ app.get('/', async (req, res) => {
   res.send(await fs.readFile('index.html', 'utf8'))
 })
 
-wss.on('connection', function connection(ws) {
-  console.log("a")
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+// wss.on('connection', function connection(ws) {
+//   console.log("a")
+//   ws.on('message', function incoming(message) {
+//     console.log('received: %s', message);
+// });
+
+//   ws.send('something');
+// });
+
+wss.on('connection', (ws) => {
+  ws.send('Hello');
+  ws.on('message', (msg) => {
+    console.log(msg)
+  })
 });
 
-  ws.send('something');
-});
-
-wss.on('open', () => {
-  wss.send('Hello');
+wss.on('open', (ws) => {
+  ws.send('Hello');
 });
 
 app.listen(port, () => {

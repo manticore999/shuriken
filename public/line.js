@@ -1,11 +1,11 @@
 import { pressedKeys } from './input.js'
-import { enemies } from './area.js'
+import { areas } from './area.js'
 
 export let line = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    size: 50,
-    width: 10,
+    size: 25,
+    width: 5,
     moveSpeed: 15,
     theta: 0,
     spinSpeed: 0.1,
@@ -14,6 +14,7 @@ export let line = {
     leftCornerX: 0,
     leftCornerY: 0,
     created: false,
+    areaOn: 0,
 
     update(ctx){
         this.spin()
@@ -64,10 +65,9 @@ export let line = {
     },
 
     collision(){
-        for (const enemy of enemies){
+        for (const enemy of areas[this.areaOn].enemies){
             if (enemy.collision) {
                 this.moveSpeed = 0
-                // console.log("collision")
             }
         }
     }

@@ -5,10 +5,16 @@ import { updateAreas, areas } from './area.js'
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const ws = new WebSocket('ws://localhost:3001');
+let scaled = false
+let areaOn = 0
+let newArea = 'next'
 
-// ws.on('open', () => {
-//   ws.send('Hello');
-// });
+ws.addEventListener('open', (e) => {
+    ws.send('Hello');
+});
+ws.addEventListener('message', (msg) => {
+    console.log(msg.data)
+});
 
 export function scaler(canvas) {
     // const bound = canvas.getBoundingClientRect()
@@ -22,11 +28,16 @@ export function scaler(canvas) {
     canvas.style.top = (winh - canvas.height) / 2 + 'px';
     window.scale = scale;
 
-    for(const area of areas){
-        area.x = canvas.width / 2 + area.safeZoneWidth - line.size
+    const area = areas[line.areaOn]
+    if((newArea == 'previous' || newArea == 'next') && area){
+        if(newArea == 'next') area.x = canvas.width / 2 + area.safeZoneWidth - area.teleporterWidth - line.size - 1
+        else if(newArea == 'previous') area.x = canvas.width / 2 - area.width - area.safeZoneWidth + area.teleporterWidth + line.size + 1
         area.y = (canvas.height - area.height) / 2
-        area.spawner()
+        area.enemyNum = line.areaOn + 1
+        if(!area.spawned) area.spawner(50, 3, 0.5, 2, 2)
+        newArea = ''
     }
+    scaled = true
 }
 scaler(canvas)
 
@@ -38,8 +49,14 @@ ctx.canvas.height *= window.devicePixelRatio
 function update(){
     ctx.fillStyle = "Blue"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    if (line.created) updateAreas(ctx)
-    line.update(ctx)
+    if(areaOn !== line.areaOn && areas[line.areaOn]){
+        if(areaOn > line.areaOn) newArea = 'previous'
+        else if(areaOn < line.areaOn) newArea = 'next'
+        areaOn = line.areaOn
+        scaler(canvas)
+    }
+    if (line.created && areas[line.areaOn]) updateAreas(ctx, line.areaOn)
+    if(areas[line.areaOn]) line.update(ctx)
     window.requestAnimationFrame(update);
 }
 window.onload = update()

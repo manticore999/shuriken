@@ -2,9 +2,8 @@ import { move } from './move.js'
 import { line } from './line.js'
 import { Enemy, updateEnemies } from './shuriken.js'
 
-const areaNum = 1
+const areaNum = 10
 export const areas = []
-export const enemies = [];
 
 class Area {
     constructor(){
@@ -12,33 +11,69 @@ class Area {
         this.height = 500
         this.x = (canvas.width - this.width) / 2
         this.y = (canvas.height - this.height) / 2
-        this.safeZoneWidth = 200
+        this.safeZoneWidth = this.height / 2
         this.enemyNum = 1
+        this.enemies = []
+        this.path = new Path2D()
+        this.safeZonePathLeft = new Path2D()
+        this.safeZonePathRight = new Path2D()
+        this.teleporterPathLeft = new Path2D()
+        this.teleporterPathRight = new Path2D()
+        this.teleporterWidth = this.safeZoneWidth / 2
+        this.spawned = false
     }
 
     update(ctx){
         this.draw(ctx)
         this.aMove()
+        this.teleport(ctx)
     }
 
     draw(ctx){
+        this.path = new Path2D()
         ctx.beginPath();
-        ctx.rect(this.x, this.y, this.width, this.height);
+        this.path.rect(this.x, this.y, this.width, this.height);
         ctx.fillStyle = "Bisque";
-        ctx.fill();
-        ctx.closePath();
+        ctx.fill(this.path);
+        this.path.closePath();
 
+        this.safeZonePathLeft = new Path2D()
         ctx.beginPath();
         ctx.rect(this.x - this.safeZoneWidth, this.y, this.safeZoneWidth, this.height);
-        ctx.fillStyle = 'rgb(200, 175, 150)';
+        ctx.fillStyle = 'Bisque';
         ctx.fill();
         ctx.closePath();
+        ctx.beginPath();
+        this.safeZonePathLeft.arc(this.x - this.safeZoneWidth, this.y + this.height / 2, this.safeZoneWidth, Math.PI * 1.5, Math.PI * 0.5);
+        ctx.fillStyle = 'rgb(200, 175, 150)';
+        ctx.fill(this.safeZonePathLeft);
+        this.safeZonePathLeft.closePath();
 
+        this.safeZonePathRight = new Path2D()
         ctx.beginPath();
         ctx.rect(this.x + this.width, this.y, this.safeZoneWidth, this.height);
-        ctx.fillStyle = 'rgb(200, 175, 150)';
+        ctx.fillStyle = 'Bisque';
         ctx.fill();
         ctx.closePath();
+        ctx.beginPath();
+        this.safeZonePathRight.arc(this.x + this.width + this.safeZoneWidth, this.y + this.height / 2, this.safeZoneWidth, Math.PI * 0.5, Math.PI * 1.5);
+        ctx.fillStyle = 'rgb(200, 175, 150)';
+        ctx.fill(this.safeZonePathRight);
+        this.safeZonePathRight.closePath();
+
+        this.teleporterPathLeft = new Path2D()
+        ctx.beginPath();
+        this.teleporterPathLeft.arc(this.x - this.safeZoneWidth, this.y + this.height / 2, this.teleporterWidth, Math.PI * 1.5, Math.PI * 0.5);
+        ctx.fillStyle = 'yellow';
+        ctx.fill(this.teleporterPathLeft);
+        this.teleporterPathLeft.closePath();
+
+        this.teleporterPathRight = new Path2D()
+        ctx.beginPath();
+        this.teleporterPathRight.arc(this.x + this.width + this.safeZoneWidth, this.y + this.height / 2, this.teleporterWidth, Math.PI * 0.5, Math.PI * 1.5);
+        ctx.fillStyle = 'yellow';
+        ctx.fill(this.teleporterPathRight);
+        this.teleporterPathRight.closePath();
     }
 
     aMove(){
@@ -57,25 +92,30 @@ class Area {
         if(maxY >= this.y + this.height) this.y = maxY - this.height
     }
 
-    spawner(){
+    teleport(ctx){
+        if((ctx.isPointInPath(this.teleporterPathLeft, line.leftCornerX, line.leftCornerY) ||
+        ctx.isPointInPath(this.teleporterPathLeft, line.rightCornerX, line.rightCornerY)) && areas[line.areaOn - 1]) line.areaOn--
+
+        else if((ctx.isPointInPath(this.teleporterPathRight, line.leftCornerX, line.leftCornerY) ||
+        ctx.isPointInPath(this.teleporterPathRight, line.rightCornerX, line.rightCornerY)) && areas[line.areaOn + 1]) line.areaOn++
+    }
+
+    spawner(size, triangleSize, spinSpeed, moveSpeed, triangleNum){
         for(let i = 0; i < this.enemyNum; i++){
-            const newEnemy = new Enemy(this.x, this.y, this.width, this.height, 50, 3, 2, 0.5, 2)
+            const newEnemy = new Enemy(this.x, this.y, this.width, this.height, size, triangleSize, spinSpeed, moveSpeed, triangleNum)
             newEnemy.createTriangles()
             newEnemy.direction()
-            enemies.push(newEnemy)
+            this.enemies.push(newEnemy)
+            this.spawned = true
         }
     }
 }
 
 for (let i = 0; i < areaNum; i++){
-    let newArea = new Area()
-    newArea.spawner()
-    areas.push(newArea)
+    areas.push(new Area())
 }
 
-export function updateAreas(ctx){
-    for(const area of areas){
-        area.update(ctx)
-        updateEnemies(ctx, area)
-    }
+export function updateAreas(ctx, index){
+    areas[index].update(ctx)
+    updateEnemies(ctx, areas[index])
 }
