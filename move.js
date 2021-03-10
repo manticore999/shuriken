@@ -1,8 +1,4 @@
-import { line } from './line.js'
-import { pressedKeys } from './input.js'
-
-export function move(){
-    const lineSpeed = line.set()
+export function move(pressedKeys){
     const vec = { x: 0, y: 0 }
 
     if (pressedKeys.right) vec.x -= 1
@@ -16,6 +12,5 @@ export function move(){
         vec.x /= m
         vec.y /= m
     }
-
-    return { x: lineSpeed.move * vec.x, y: lineSpeed.move * vec.y}
+    return { x: vec.x, y: vec.y, keyZ: pressedKeys.z, keyX: pressedKeys.x, shift: pressedKeys.shift}
 }

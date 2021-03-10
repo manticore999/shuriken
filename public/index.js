@@ -1,23 +1,34 @@
 // import ws from 'ws';
 import { line } from './line.js'
 import { updateAreas, areas } from './area.js'
+import { pressedKeys } from './input.js'
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const ws = new WebSocket('ws://localhost:3001');
+let wsOpen = false
 let scaled = false
 let areaOn = 0
 let newArea = 'next'
+export let m = {
+    x: 0,
+    y: 0,
+    keyZ: 0,
+    keyX: 0,
+    shift: 0,
+}
 
 ws.addEventListener('open', (e) => {
-    ws.send('Hello');
+    wsOpen = true
 });
+
 ws.addEventListener('message', (msg) => {
-    console.log(msg.data)
+    for(const obj in m){
+        m[obj] = JSON.parse(msg.data)[obj]
+    }
 });
 
 export function scaler(canvas) {
-    // const bound = canvas.getBoundingClientRect()
     const winw = window.innerWidth;
     const winh = window.innerHeight;
     const xvalue = winw / canvas.width;
@@ -49,14 +60,19 @@ ctx.canvas.height *= window.devicePixelRatio
 function update(){
     ctx.fillStyle = "Blue"
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     if(areaOn !== line.areaOn && areas[line.areaOn]){
         if(areaOn > line.areaOn) newArea = 'previous'
         else if(areaOn < line.areaOn) newArea = 'next'
         areaOn = line.areaOn
         scaler(canvas)
     }
-    if (line.created && areas[line.areaOn]) updateAreas(ctx, line.areaOn)
-    if(areas[line.areaOn]) line.update(ctx)
+
+    if (line.created && areas[line.areaOn]) updateAreas(ctx, line.areaOn, m, line)
+    if(areas[line.areaOn]) line.update(ctx, m.keyZ, m.keyX, m.shift, areas)
+
+    if(wsOpen) ws.send(JSON.stringify(pressedKeys));
+
     window.requestAnimationFrame(update);
 }
 window.onload = update()

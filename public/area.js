@@ -1,7 +1,6 @@
-import { move } from './move.js'
-import { line } from './line.js'
 import { Enemy, updateEnemies } from './shuriken.js'
 
+const canvas = document.querySelector("canvas")
 const areaNum = 10
 export const areas = []
 
@@ -23,10 +22,10 @@ class Area {
         this.spawned = false
     }
 
-    update(ctx){
+    update(ctx, m, line){
         this.draw(ctx)
-        this.aMove()
-        this.teleport(ctx)
+        this.aMove(m, line)
+        this.teleport(ctx, line)
     }
 
     draw(ctx){
@@ -76,10 +75,10 @@ class Area {
         this.teleporterPathRight.closePath();
     }
 
-    aMove(){
-        const m = move()
-        this.x += m.x
-        this.y += m.y
+    aMove(m, line){
+        const lineSpeed = line.set()
+        this.x += m.x * lineSpeed.move
+        this.y += m.y * lineSpeed.move
 
         const minX = Math.min(line.leftCornerX, line.rightCornerX)
         const maxX = Math.max(line.leftCornerX, line.rightCornerX)
@@ -92,7 +91,7 @@ class Area {
         if(maxY >= this.y + this.height) this.y = maxY - this.height
     }
 
-    teleport(ctx){
+    teleport(ctx, line){
         if((ctx.isPointInPath(this.teleporterPathLeft, line.leftCornerX, line.leftCornerY) ||
         ctx.isPointInPath(this.teleporterPathLeft, line.rightCornerX, line.rightCornerY)) && areas[line.areaOn - 1]) line.areaOn--
 
@@ -115,7 +114,7 @@ for (let i = 0; i < areaNum; i++){
     areas.push(new Area())
 }
 
-export function updateAreas(ctx, index){
-    areas[index].update(ctx)
-    updateEnemies(ctx, areas[index])
+export function updateAreas(ctx, index, m, line){
+    areas[index].update(ctx, m, line)
+    updateEnemies(ctx, areas[index], m, line)
 }

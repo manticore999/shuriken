@@ -1,6 +1,3 @@
-import { pressedKeys } from './input.js'
-import { areas } from './area.js'
-
 export let line = {
     x: canvas.width / 2,
     y: canvas.height / 2,
@@ -16,25 +13,25 @@ export let line = {
     created: false,
     areaOn: 0,
 
-    update(ctx){
-        this.spin()
+    update(ctx, z, x, shift, areas){
+        this.spin(z, x, shift)
         this.draw(ctx)
-        this.collision(ctx)
+        this.collision(areas)
         if(!this.created) this.created = true
     },
 
-    set(){
+    set(shift){
         let speed = {
           spin: this.spinSpeed,
           move: this.moveSpeed
         }
 
-        if(pressedKeys.shift){
+        if(shift){
           speed.spin = this.spinSpeed / 2
           speed.move = this.moveSpeed / 2
         }
 
-        else if(!pressedKeys.shift){
+        else if(shift){
           speed.spin = this.spinSpeed
           speed.move = this.moveSpeed
         }
@@ -52,10 +49,10 @@ export let line = {
         ctx.stroke();
     },
 
-    spin(){
-        const lineSpeed = line.set()
-        if(pressedKeys.z) this.theta -= lineSpeed.spin
-        else if (pressedKeys.x) this.theta += lineSpeed.spin
+    spin(z, x, shift){
+        const lineSpeed = line.set(shift)
+        if(z) this.theta -= lineSpeed.spin
+        else if (x) this.theta += lineSpeed.spin
         else this.theta += 0
 
         this.rightCornerX = (this.x) + (this.size * Math.cos(this.theta))
@@ -64,7 +61,7 @@ export let line = {
         this.leftCornerY = (this.y) - (this.size * Math.sin(this.theta))
     },
 
-    collision(){
+    collision(areas){
         for (const enemy of areas[this.areaOn].enemies){
             if (enemy.collision) {
                 this.moveSpeed = 0

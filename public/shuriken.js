@@ -1,6 +1,3 @@
-import { line } from './line.js'
-import { move } from './move.js'
-
 class Triangle {
 	constructor(circSize, dir) {
 		this.dir = dir;
@@ -45,9 +42,9 @@ export class Enemy {
 		this.triangleSize = triangleSize;
     }
 
-    update(ctx, area){
-        this.sMove(ctx, area)
-        this.draw(ctx)
+    update(ctx, area, m, line){
+        this.sMove(ctx, area, m, line)
+        this.draw(ctx, line)
     }
 
     createTriangles() {
@@ -66,21 +63,22 @@ export class Enemy {
 		this.velY = Math.sin(angle) * this.moveSpeed;
     }
 
-    sMove(ctx, area){
+    sMove(ctx, area, m, line){
 		const minX = Math.min(line.leftCornerX, line.rightCornerX)
 		const maxX = Math.max(line.leftCornerX, line.rightCornerX)
 		const minY = Math.min(line.leftCornerY, line.rightCornerY)
 		const maxY = Math.max(line.leftCornerY, line.rightCornerY)
+		const lineSpeed = line.set()
 
-		const m = move()
-		if(minX > area.x - area.safeZoneWidth && maxX < area.x + area.width + area.safeZoneWidth) this.x += m.x
-		if(minY > area.y && maxY < area.y + area.height) this.y += m.y
+		if(minX > area.x - area.safeZoneWidth && maxX < area.x + area.width + area.safeZoneWidth) this.x += m.x * lineSpeed.move
+		if(minY > area.y && maxY < area.y + area.height) this.y += m.y * lineSpeed.move
 
 		if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1
 		if(this.y + this.size >= area.y + area.height || this.y - this.size <= area.y) this.velY *= -1
 		
 		for(const triangle of this.triangles){
-			console.log(triangle.pointX, triangle.pointY)
+			// console.log(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY),
+			// ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY))
 			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY) ||
 			ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) this.velX *= -1
 		}
@@ -89,7 +87,7 @@ export class Enemy {
 		this.y += this.velY;
     }
 
-	isColliding(ctx){
+	isColliding(ctx, line){
 		const collision = 
 			(ctx.isPointInPath(this.trianglePath, line.leftCornerX, line.leftCornerY) ||
 			ctx.isPointInPath(this.trianglePath, line.rightCornerX, line.rightCornerY)) &&
@@ -107,7 +105,7 @@ export class Enemy {
         ctx.stroke(this.circle);
 	}
 
-    draw(ctx){
+    draw(ctx, line){
         this.angle += this.spinSpeed
 
         ctx.save()
@@ -117,7 +115,7 @@ export class Enemy {
         for (const triangle of this.triangles) triangle.draw(ctx, this.trianglePath)
 		this.drawCircle(ctx)
 
-        this.collision = this.isColliding(ctx)
+        this.collision = this.isColliding(ctx, line)
         ctx.restore()
 
 		this.trianglePath = new Path2D()
@@ -125,8 +123,8 @@ export class Enemy {
     
 }
 
-export function updateEnemies(ctx, area){
+export function updateEnemies(ctx, area, m, line){
 	for(let i = 0; i < area.enemies.length; i++){
-		area.enemies[i].update(ctx, area)
+		area.enemies[i].update(ctx, area, m, line)
 	}
 }
