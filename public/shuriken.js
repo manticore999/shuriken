@@ -20,6 +20,9 @@ class Triangle {
 
 		this.pointX = this.circSize * this.size * Math.cos(this.dir)
 		this.pointY = this.circSize * this.size * Math.sin(this.dir)
+		console.log(this.circSize, this.size, this.pointX, this.pointY)
+		ctx.arc(this.pointX, this.pointY, 10, 0, Math.PI * 2);
+		ctx.fill()
 	}
 }
 
@@ -79,6 +82,7 @@ export class Enemy {
 		for(const triangle of this.triangles){
 			// console.log(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY),
 			// ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY))
+			// console.log(triangle.pointX, triangle.pointY)
 			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY) ||
 			ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) this.velX *= -1
 		}
@@ -119,8 +123,7 @@ export class Enemy {
         ctx.restore()
 
 		this.trianglePath = new Path2D()
-    }
-    
+    }   
 }
 
 export function updateEnemies(ctx, area, m, line){

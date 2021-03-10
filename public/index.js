@@ -1,11 +1,14 @@
-// import ws from 'ws';
 import { line } from './line.js'
 import { updateAreas, areas } from './area.js'
 import { pressedKeys } from './input.js'
+import { scaleCanvas } from './scaleCanvas.js'
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const ws = new WebSocket('ws://localhost:3001');
+const backgroundColor = "blue"
+document.body.style.backgroundColor = backgroundColor
+
 let wsOpen = false
 let scaled = false
 let areaOn = 0
@@ -29,15 +32,7 @@ ws.addEventListener('message', (msg) => {
 });
 
 export function scaler(canvas) {
-    const winw = window.innerWidth;
-    const winh = window.innerHeight;
-    const xvalue = winw / canvas.width;
-    const yvalue = winh / canvas.height;
-    const scale = Math.min(xvalue, yvalue);
-    canvas.style.transform = 'scale(' + scale + ')';
-    canvas.style.left = (winw - canvas.width) / 2 + 'px';
-    canvas.style.top = (winh - canvas.height) / 2 + 'px';
-    window.scale = scale;
+    scaleCanvas(canvas)
 
     const area = areas[line.areaOn]
     if((newArea == 'previous' || newArea == 'next') && area){
@@ -58,7 +53,7 @@ ctx.canvas.width *= window.devicePixelRatio
 ctx.canvas.height *= window.devicePixelRatio
 
 function update(){
-    ctx.fillStyle = "Blue"
+    ctx.fillStyle = backgroundColor
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if(areaOn !== line.areaOn && areas[line.areaOn]){
