@@ -5,10 +5,11 @@ import { move } from './move.js'
 
 const app = express()
 const port = process.env.PORT || 3000
-const wsport = 3001
-const wss = new ws.Server({port: wsport});
+// const wsport = 3001
+// const wss = new ws.Server({port: wsport});
+const wss = new ws.Server({port: port});
 let wsOpen = false
-// app.set('port', process.env.PORT || 3000);
+
 app.use(express.static('public'))
 
 app.get('/', async (req, res) => {

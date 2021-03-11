@@ -5,7 +5,11 @@ import { scaleCanvas } from './scaleCanvas.js'
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const ws = new WebSocket('ws://localhost:3001');
+// const ws = new WebSocket('ws://localhost:3001');
+// const port = process.env.PORT || 3000
+const port = 3000
+const ws = new WebSocket(`ws://localhost:${port}`);
+
 const backgroundColor = "blue"
 document.body.style.backgroundColor = backgroundColor
 

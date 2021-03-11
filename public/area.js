@@ -44,6 +44,7 @@ class Area {
         ctx.closePath();
         ctx.beginPath();
         this.safeZonePathLeft.arc(this.x - this.safeZoneWidth, this.y + this.height / 2, this.safeZoneWidth, Math.PI * 1.5, Math.PI * 0.5);
+        this.safeZonePathLeft.lineTo(this.x - this.safeZoneWidth, this.y)
         ctx.fillStyle = 'rgb(200, 175, 150)';
         ctx.fill(this.safeZonePathLeft);
         this.safeZonePathLeft.closePath();
@@ -56,6 +57,7 @@ class Area {
         ctx.closePath();
         ctx.beginPath();
         this.safeZonePathRight.arc(this.x + this.width + this.safeZoneWidth, this.y + this.height / 2, this.safeZoneWidth, Math.PI * 0.5, Math.PI * 1.5);
+        this.safeZonePathRight.lineTo(this.x + this.width + this.safeZoneWidth, this.y)
         ctx.fillStyle = 'rgb(200, 175, 150)';
         ctx.fill(this.safeZonePathRight);
         this.safeZonePathRight.closePath();

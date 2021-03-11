@@ -29,7 +29,7 @@ export class Enemy {
 		this.x = Math.random() * (areaWidth - this.size * 2) + areaX + this.size;
 		this.y = Math.random() * (areaHeight - this.size * 2) + areaY + this.size;
 		this.color = "black";
-		this.angle = 0;
+		this.angle = Math.random() * 360;
 		this.velX = 0;
 		this.velY = 0;
 		this.spinSpeed = spinSpeed;
@@ -100,14 +100,21 @@ export class Enemy {
 
     draw(ctx, line, area){
         this.angle += this.spinSpeed
-
+		// ctx.fillStyle = 'black'
+		// ctx.fill(area.safeZonePathLeft)
+		ctx.stroke(area.safeZonePathLeft)
+		ctx.stroke(area.safeZonePathRight)
         ctx.save()
         ctx.translate(this.x, this.y)
         ctx.rotate(this.angle * Math.PI / 180)
 
 		for(const triangle of this.triangles){
-			if(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY) ||
-			ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY)) this.velX *= -1
+			// if(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY) ||
+			// ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY)) this.velX *= -1
+			// if(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY)) console.log("a")
+			// else if(ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY)) console.log("a")
+			// console.log(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY), ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY))
+			// console.log(this.x + triangle.pointX, this.y + triangle.pointY)
 			triangle.draw(ctx, this.trianglePath)
 		}
 		this.drawCircle(ctx)
