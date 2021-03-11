@@ -20,9 +20,6 @@ class Triangle {
 
 		this.pointX = this.circSize * this.size * Math.cos(this.dir)
 		this.pointY = this.circSize * this.size * Math.sin(this.dir)
-		console.log(this.circSize, this.size, this.pointX, this.pointY)
-		ctx.arc(this.pointX, this.pointY, 10, 0, Math.PI * 2);
-		ctx.fill()
 	}
 }
 
@@ -47,7 +44,7 @@ export class Enemy {
 
     update(ctx, area, m, line){
         this.sMove(ctx, area, m, line)
-        this.draw(ctx, line)
+        this.draw(ctx, line, area)
     }
 
     createTriangles() {
@@ -78,14 +75,6 @@ export class Enemy {
 
 		if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1
 		if(this.y + this.size >= area.y + area.height || this.y - this.size <= area.y) this.velY *= -1
-		
-		for(const triangle of this.triangles){
-			// console.log(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY),
-			// ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY))
-			// console.log(triangle.pointX, triangle.pointY)
-			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY) ||
-			ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) this.velX *= -1
-		}
 
 		this.x += this.velX;
 		this.y += this.velY;
@@ -109,14 +98,18 @@ export class Enemy {
         ctx.stroke(this.circle);
 	}
 
-    draw(ctx, line){
+    draw(ctx, line, area){
         this.angle += this.spinSpeed
 
         ctx.save()
         ctx.translate(this.x, this.y)
         ctx.rotate(this.angle * Math.PI / 180)
 
-        for (const triangle of this.triangles) triangle.draw(ctx, this.trianglePath)
+		for(const triangle of this.triangles){
+			if(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY) ||
+			ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY)) this.velX *= -1
+			triangle.draw(ctx, this.trianglePath)
+		}
 		this.drawCircle(ctx)
 
         this.collision = this.isColliding(ctx, line)

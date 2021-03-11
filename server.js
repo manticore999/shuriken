@@ -4,7 +4,7 @@ import ws from 'ws'
 import { move } from './move.js'
 
 const app = express()
-const port = 3000
+const port = $PORT ? $PORT : 3000
 const wsport = 3001
 const wss = new ws.Server({port: wsport});
 let wsOpen = false
@@ -39,5 +39,6 @@ wss.on('open', (ws) => {
 });
 
 app.listen(port, () => {
+  // console.log($PORT, process.env.PORT)
   console.log(`Server listening at http://localhost:${port}`)
 })
