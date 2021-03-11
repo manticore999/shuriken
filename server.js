@@ -4,11 +4,11 @@ import ws from 'ws'
 import { move } from './move.js'
 
 const app = express()
-const port = $PORT ? $PORT : 3000
+const port = process.env.PORT || 3000
 const wsport = 3001
 const wss = new ws.Server({port: wsport});
 let wsOpen = false
-app.set('port', process.env.PORT || 3000);
+// app.set('port', process.env.PORT || 3000);
 app.use(express.static('public'))
 
 app.get('/', async (req, res) => {
