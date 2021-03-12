@@ -7,7 +7,8 @@ const app = express()
 const port = process.env.PORT || 3000
 // const wsport = 3001
 // const wss = new ws.Server({port: wsport});
-const wss = new ws.Server({port: port});
+// const wss = new ws.Server({port: port});
+const wss = new ws.Server({noServer: true});
 let wsOpen = false
 
 app.use(express.static('public'))
