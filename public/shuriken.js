@@ -9,17 +9,21 @@ class Triangle {
 		this.pointY = 0
 	}
 
-	draw(ctx, path) {
+	draw(ctx, path, angle, circX, circY) {
+		this.angle = angle
+		this.circX = circX
+        this.circY = circY
+
 		ctx.beginPath();
-		path.moveTo(this.circSize * this.size * Math.cos(this.dir), this.circSize * this.size * Math.sin(this.dir));
-		path.lineTo(this.circSize * (Math.cos(this.dir - this.width)), this.circSize * (Math.sin(this.dir - this.width)));
-		path.lineTo(this.circSize * (Math.cos(this.dir + this.width)), this.circSize * (Math.sin(this.dir + this.width)));
+		path.moveTo(this.circX + this.circSize * this.size *  Math.cos(this.angle + this.dir), this.circY + this.circSize * this.size *  Math.sin(this.angle + this.dir));
+		path.lineTo(this.circX + this.circSize * (Math.cos(this.angle + this.dir - this.width)), this.circY + this.circSize * (Math.sin(this.angle + this.dir - this.width)));
+		path.lineTo(this.circX + this.circSize * (Math.cos(this.angle + this.dir + this.width)), this.circY + this.circSize * (Math.sin(this.angle + this.dir + this.width)));
 		ctx.fillStyle = this.color;
 		ctx.fill(path);
 		path.closePath();
 
-		this.pointX = this.circSize * this.size * Math.cos(this.dir)
-		this.pointY = this.circSize * this.size * Math.sin(this.dir)
+		this.pointX = this.circX + this.circSize * this.size *  Math.cos(this.angle + this.dir)
+		this.pointY = this.circY + this.circSize * this.size *  Math.sin(this.angle + this.dir)
 	}
 }
 
@@ -44,7 +48,9 @@ export class Enemy {
 
     update(ctx, area, m, line){
         this.sMove(ctx, area, m, line)
-        this.draw(ctx, line, area)
+        this.draw(ctx, area)
+		this.isColliding(ctx, line)
+		this.trianglePath = new Path2D()
     }
 
     createTriangles() {
@@ -81,49 +87,35 @@ export class Enemy {
     }
 
 	isColliding(ctx, line){
-		const collision = 
+		this.collision = 
 			(ctx.isPointInPath(this.trianglePath, line.leftCornerX, line.leftCornerY) ||
 			ctx.isPointInPath(this.trianglePath, line.rightCornerX, line.rightCornerY)) &&
 			(!ctx.isPointInPath(this.circle, line.leftCornerX, line.leftCornerY) &&
 			!ctx.isPointInPath(this.circle, line.rightCornerX, line.rightCornerY))
-		return collision
+		return this.collision
 	}
 
 	drawCircle(ctx){
 		this.circle = new Path2D()
         ctx.fillStyle = this.color;
-        this.circle.arc(0, 0, this.size, 0, Math.PI * 2);
+        this.circle.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill(this.circle);
         this.circle.closePath();
         ctx.stroke(this.circle);
 	}
 
-    draw(ctx, line, area){
-        this.angle += this.spinSpeed
-		// ctx.fillStyle = 'black'
-		// ctx.fill(area.safeZonePathLeft)
-		ctx.stroke(area.safeZonePathLeft)
-		ctx.stroke(area.safeZonePathRight)
-        ctx.save()
-        ctx.translate(this.x, this.y)
-        ctx.rotate(this.angle * Math.PI / 180)
+    draw(ctx, area){
+        this.angle += this.spinSpeed * Math.PI / 180;
 
 		for(const triangle of this.triangles){
-			// if(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY) ||
-			// ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY)) this.velX *= -1
-			// if(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY)) console.log("a")
-			// else if(ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY)) console.log("a")
-			// console.log(ctx.isPointInPath(area.safeZonePathLeft, this.x + triangle.pointX, this.y + triangle.pointY), ctx.isPointInPath(area.safeZonePathRight, this.x + triangle.pointX, this.y + triangle.pointY))
-			// console.log(this.x + triangle.pointX, this.y + triangle.pointY)
-			triangle.draw(ctx, this.trianglePath)
+			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY)) this.x++
+			else if (ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) this.x--
+			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY)) console.log("a")
+			else if(ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) console.log("a")
+			triangle.draw(ctx, this.trianglePath, this.angle, this.x, this.y)
 		}
 		this.drawCircle(ctx)
-
-        this.collision = this.isColliding(ctx, line)
-        ctx.restore()
-
-		this.trianglePath = new Path2D()
-    }   
+    }
 }
 
 export function updateEnemies(ctx, area, m, line){

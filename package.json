@@ -1,8 +1,8 @@
 {
   "type": "module",
-  
   "dependencies": {
     "express": "^4.17.1",
+    "express-ws": "^4.0.0",
     "fs": "^0.0.1-security",
     "ws": "^7.4.3"
   }

@@ -2,7 +2,7 @@ import { Enemy, updateEnemies } from './shuriken.js'
 
 const canvas = document.querySelector("canvas")
 const areaNum = 10
-export const areas = []
+export const map = []
 
 class Area {
     constructor(){
@@ -95,10 +95,10 @@ class Area {
 
     teleport(ctx, line){
         if((ctx.isPointInPath(this.teleporterPathLeft, line.leftCornerX, line.leftCornerY) ||
-        ctx.isPointInPath(this.teleporterPathLeft, line.rightCornerX, line.rightCornerY)) && areas[line.areaOn - 1]) line.areaOn--
+        ctx.isPointInPath(this.teleporterPathLeft, line.rightCornerX, line.rightCornerY)) && map[line.areaOn - 1]) line.areaOn--
 
         else if((ctx.isPointInPath(this.teleporterPathRight, line.leftCornerX, line.leftCornerY) ||
-        ctx.isPointInPath(this.teleporterPathRight, line.rightCornerX, line.rightCornerY)) && areas[line.areaOn + 1]) line.areaOn++
+        ctx.isPointInPath(this.teleporterPathRight, line.rightCornerX, line.rightCornerY)) && map[line.areaOn + 1]) line.areaOn++
     }
 
     spawner(size, triangleSize, spinSpeed, moveSpeed, triangleNum){
@@ -113,10 +113,10 @@ class Area {
 }
 
 for (let i = 0; i < areaNum; i++){
-    areas.push(new Area())
+    map.push(new Area())
 }
 
 export function updateAreas(ctx, index, m, line){
-    areas[index].update(ctx, m, line)
-    updateEnemies(ctx, areas[index], m, line)
+    map[index].update(ctx, m, line)
+    updateEnemies(ctx, map[index], m, line)
 }
