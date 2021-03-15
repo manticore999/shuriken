@@ -5,12 +5,12 @@ import { scaleCanvas } from './scaleCanvas.js'
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-// const wss = new WebSocket('wss://localhost:3001');
-// const port = 3000
-const wss = new WebSocket(`ws://${location.host}`);
-// const wss = new WebSocket(`wss://localhost:${port}`);
-// const wss = new WebSocket(`wss://sshuriken.herokuapp.com/`);
-// const wss = new WebSocket();
+
+let wss
+console.log(location.protocol)
+if(location.protocol == "http:") wss = new WebSocket(`ws://${location.host}`);
+else if(location.protocol == "https:") wss = new WebSocket(`wss://${location.host}`);
+
 
 const backgroundColor = "blue"
 document.body.style.backgroundColor = backgroundColor   
