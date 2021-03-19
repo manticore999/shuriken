@@ -2,17 +2,12 @@ import express from 'express'
 const app = express()
 import expressWs from 'express-ws'
 expressWs(app)
-import ws from 'ws'
 import fs from 'fs/promises'
 import { move } from './move.js'
 
-
 const port = process.env.PORT || 3000
-// const wsport = 3001
-// const wss = new ws.Server({port: wsport});
-// const wss = new ws.Server({port: port});
-
-let wsOpen = false
+let players = []
+let clientId = -1
 
 app.use(express.static('public'))
 
@@ -20,34 +15,22 @@ const server = app.get('/', async (req, res) => {
   res.send(await fs.readFile('index.html', 'utf8'))
 })
 
-// const wss = new ws.Server({server});
-
-let pressedKeys = {
-  up: false,
-  left: false,
-  right: false,
-  down: false,
-  z: false,
-  x: false,
-  shift: false,
-}
-
 app.ws('/', (ws, req) => {
-  ws.on('message', (msg) => {
-    pressedKeys = JSON.parse(msg)
-    
+  console.log("connected")
+  clientId++
+
+  ws.on('message', (_msg) => {
+    const msg = JSON.parse(_msg)
+    let pressedKeys = msg.input
     let m = move(pressedKeys)
-    ws.send(JSON.stringify(m))
+    players[clientId] = msg.player
+    ws.send(JSON.stringify({input: m, players: players, client: clientId}))
+    // console.log(players)
   })
-})
 
-app.ws('/', (ws, req) => {
-  ws.on('open', (ws) => {
-    wsOpen = true
-  })
+  players.push(player)
 })
 
 app.listen(port, () => {
-  // console.log($PORT, process.env.PORT)
   console.log(`Server listening at http://localhost:${port}`)
 })

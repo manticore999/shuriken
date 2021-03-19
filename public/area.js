@@ -45,7 +45,8 @@ class Area {
         ctx.beginPath();
         this.safeZonePathLeft.arc(this.x - this.safeZoneWidth, this.y + this.height / 2, this.safeZoneWidth, Math.PI * 1.5, Math.PI * 0.5);
         this.safeZonePathLeft.lineTo(this.x - this.safeZoneWidth, this.y)
-        ctx.fillStyle = 'rgb(200, 175, 150)';
+        // ctx.fillStyle = 'rgb(200, 175, 150)';
+        ctx.fillStyle = 'black';
         ctx.fill(this.safeZonePathLeft);
         this.safeZonePathLeft.closePath();
 
@@ -58,7 +59,8 @@ class Area {
         ctx.beginPath();
         this.safeZonePathRight.arc(this.x + this.width + this.safeZoneWidth, this.y + this.height / 2, this.safeZoneWidth, Math.PI * 0.5, Math.PI * 1.5);
         this.safeZonePathRight.lineTo(this.x + this.width + this.safeZoneWidth, this.y)
-        ctx.fillStyle = 'rgb(200, 175, 150)';
+        // ctx.fillStyle = 'rgb(200, 175, 150)';
+        ctx.fillStyle = 'black';
         ctx.fill(this.safeZonePathRight);
         this.safeZonePathRight.closePath();
 
@@ -78,9 +80,10 @@ class Area {
     }
 
     aMove(m, line){
+        // console.log(line)
         const lineSpeed = line.set()
-        this.x += m.x * lineSpeed.move
-        this.y += m.y * lineSpeed.move
+        if(m.x) this.x += m.x * lineSpeed.move
+        if(m.y) this.y += m.y * lineSpeed.move
 
         const minX = Math.min(line.leftCornerX, line.rightCornerX)
         const maxX = Math.max(line.leftCornerX, line.rightCornerX)
@@ -91,14 +94,17 @@ class Area {
         if(maxX >= this.x + this.width + this.safeZoneWidth) this.x = maxX - this.width - this.safeZoneWidth
         if(minY <= this.y) this.y = minY
         if(maxY >= this.y + this.height) this.y = maxY - this.height
+
     }
 
     teleport(ctx, line){
+
         if((ctx.isPointInPath(this.teleporterPathLeft, line.leftCornerX, line.leftCornerY) ||
         ctx.isPointInPath(this.teleporterPathLeft, line.rightCornerX, line.rightCornerY)) && map[line.areaOn - 1]) line.areaOn--
 
         else if((ctx.isPointInPath(this.teleporterPathRight, line.leftCornerX, line.leftCornerY) ||
         ctx.isPointInPath(this.teleporterPathRight, line.rightCornerX, line.rightCornerY)) && map[line.areaOn + 1]) line.areaOn++
+
     }
 
     spawner(size, triangleSize, spinSpeed, moveSpeed, triangleNum){
@@ -116,7 +122,8 @@ for (let i = 0; i < areaNum; i++){
     map.push(new Area())
 }
 
-export function updateAreas(ctx, index, m, line){
-    map[index].update(ctx, m, line)
-    updateEnemies(ctx, map[index], m, line)
+export function updateAreas(ctx, area, m, line){
+    area.update(ctx, m, line)
+    updateEnemies(ctx, area, m, line)
+    // console.log(area, area.x, area.y)
 }

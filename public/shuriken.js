@@ -97,6 +97,7 @@ export class Enemy {
 
 	drawCircle(ctx){
 		this.circle = new Path2D()
+		ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
         this.circle.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill(this.circle);
@@ -110,8 +111,8 @@ export class Enemy {
 		for(const triangle of this.triangles){
 			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY)) this.x++
 			else if (ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) this.x--
-			if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY)) console.log("a")
-			else if(ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) console.log("a")
+			// if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY)) console.log("a")
+			// else if(ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) console.log("a")
 			triangle.draw(ctx, this.trianglePath, this.angle, this.x, this.y)
 		}
 		this.drawCircle(ctx)
