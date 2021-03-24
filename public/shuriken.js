@@ -9,15 +9,15 @@ class Triangle {
 		this.pointY = 0
 	}
 
-	draw(ctx, path, angle, circX, circY) {
+	draw(ctx, path, angle, circX, circY, line) {
 		this.angle = angle
 		this.circX = circX
         this.circY = circY
 
 		ctx.beginPath();
-		path.moveTo(this.circX + this.circSize * this.size *  Math.cos(this.angle + this.dir), this.circY + this.circSize * this.size *  Math.sin(this.angle + this.dir));
-		path.lineTo(this.circX + this.circSize * (Math.cos(this.angle + this.dir - this.width)), this.circY + this.circSize * (Math.sin(this.angle + this.dir - this.width)));
-		path.lineTo(this.circX + this.circSize * (Math.cos(this.angle + this.dir + this.width)), this.circY + this.circSize * (Math.sin(this.angle + this.dir + this.width)));
+		path.moveTo(this.circX  - line.x + canvas.width / 2 + this.circSize * this.size *  Math.cos(this.angle + this.dir), this.circY - line.y + canvas.height / 2 + this.circSize * this.size *  Math.sin(this.angle + this.dir));
+		path.lineTo(this.circX  - line.x + canvas.width / 2 + this.circSize * (Math.cos(this.angle + this.dir - this.width)), this.circY - line.y + canvas.height / 2 + this.circSize * (Math.sin(this.angle + this.dir - this.width)));
+		path.lineTo(this.circX  - line.x + canvas.width / 2 + this.circSize * (Math.cos(this.angle + this.dir + this.width)), this.circY - line.y + canvas.height / 2 + this.circSize * (Math.sin(this.angle + this.dir + this.width)));
 		ctx.fillStyle = this.color;
 		ctx.fill(path);
 		path.closePath();
@@ -30,6 +30,7 @@ class Triangle {
 export class Enemy {
     constructor(areaX, areaY, areaWidth, areaHeight, size, triangleSize, spinSpeed, moveSpeed, triangleNum){
 		this.size = size;
+		// console.log(areaWidth, areaHeight, this.size, areaX, areaY)
 		this.x = Math.random() * (areaWidth - this.size * 2) + areaX + this.size;
 		this.y = Math.random() * (areaHeight - this.size * 2) + areaY + this.size;
 		this.color = "black";
@@ -48,7 +49,8 @@ export class Enemy {
 
     update(ctx, area, m, line){
         this.sMove(ctx, area, m, line)
-        this.draw(ctx, area)
+		// console.log(this.x, this.y)
+        this.draw(ctx, area, line)
 		this.isColliding(ctx, line)
 		this.trianglePath = new Path2D()
     }
@@ -70,18 +72,9 @@ export class Enemy {
     }
 
     sMove(ctx, area, m, line){
-		const minX = Math.min(line.leftCornerX, line.rightCornerX)
-		const maxX = Math.max(line.leftCornerX, line.rightCornerX)
-		const minY = Math.min(line.leftCornerY, line.rightCornerY)
-		const maxY = Math.max(line.leftCornerY, line.rightCornerY)
-		const lineSpeed = line.set()
-
-		if(minX > area.x - area.safeZoneWidth && maxX < area.x + area.width + area.safeZoneWidth) this.x += m.x * lineSpeed.move
-		if(minY > area.y && maxY < area.y + area.height) this.y += m.y * lineSpeed.move
-
 		if(this.x + this.size >= area.x + area.width || this.x - this.size <= area.x) this.velX *= -1
 		if(this.y + this.size >= area.y + area.height || this.y - this.size <= area.y) this.velY *= -1
-
+		
 		this.x += this.velX;
 		this.y += this.velY;
     }
@@ -95,17 +88,17 @@ export class Enemy {
 		return this.collision
 	}
 
-	drawCircle(ctx){
+	drawCircle(ctx, line){
 		this.circle = new Path2D()
 		ctx.strokeStyle = this.color;
         ctx.fillStyle = this.color;
-        this.circle.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        this.circle.arc(this.x - line.x + canvas.width / 2, this.y - line.y + canvas.height / 2, this.size, 0, Math.PI * 2);
         ctx.fill(this.circle);
         this.circle.closePath();
         ctx.stroke(this.circle);
 	}
 
-    draw(ctx, area){
+    draw(ctx, area, line){
         this.angle += this.spinSpeed * Math.PI / 180;
 
 		for(const triangle of this.triangles){
@@ -113,9 +106,9 @@ export class Enemy {
 			else if (ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) this.x--
 			// if(ctx.isPointInPath(area.safeZonePathLeft, triangle.pointX, triangle.pointY)) console.log("a")
 			// else if(ctx.isPointInPath(area.safeZonePathRight, triangle.pointX, triangle.pointY)) console.log("a")
-			triangle.draw(ctx, this.trianglePath, this.angle, this.x, this.y)
+			triangle.draw(ctx, this.trianglePath, this.angle, this.x, this.y, line)
 		}
-		this.drawCircle(ctx)
+		this.drawCircle(ctx, line)
     }
 }
 

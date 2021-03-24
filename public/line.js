@@ -2,24 +2,25 @@ export class Line {
     constructor(){
         this.x = canvas.width / 2
         this.y = canvas.height / 2
-        this.size = 25
+        this.size = 50
         this.width = 5
         this.moveSpeed = 15
         this.theta = 0
-        this.spinSpeed = 0.1
+        this.spinSpeed = 0.05
         this.rightCornerX = canvas.width / 2 + this.size
         this.rightCornerY = canvas.height / 2
         this.leftCornerX = canvas.width / 2 - this.size
         this.leftCornerY = canvas.height / 2
         this.created = false
         this.areaOn = 0
+        this.alive = true
     }
 
-    update(ctx, z, x, shift, areas){
-        // console.log(this.areaOn)
+    update(ctx, z, x, shift, map, m){
         this.spin(z, x, shift)
         this.draw(ctx)
-        this.collision(areas)
+        this.move(m, shift, map)
+        this.collision(map)
         if(!this.created) this.created = true
     }
 
@@ -44,8 +45,8 @@ export class Line {
 
     draw(ctx){
         ctx.beginPath();
-        ctx.moveTo(this.rightCornerX, this.rightCornerY);
-        ctx.lineTo(this.leftCornerX, this.leftCornerY);
+        ctx.moveTo(canvas.width / 2 + (this.size * Math.cos(this.theta)), canvas.height / 2 + (this.size * Math.sin(this.theta)));
+        ctx.lineTo(canvas.width / 2 - (this.size * Math.cos(this.theta)), canvas.height / 2 - (this.size * Math.sin(this.theta)));
         ctx.lineWidth = this.width;
         ctx.closePath();
         ctx.strokeStyle = "brown"
@@ -64,9 +65,27 @@ export class Line {
         this.leftCornerY = (this.y) - (this.size * Math.sin(this.theta))
     }
 
-    collision(areas){
-        for (const enemy of areas[this.areaOn].enemies){
+    move(m, shift, map){
+        const lineSpeed = this.set(shift)
+
+        const minX = Math.min(this.leftCornerX, this.rightCornerX)
+        const maxX = Math.max(this.leftCornerX, this.rightCornerX)
+        const minY = Math.min(this.leftCornerY, this.rightCornerY)
+        const maxY = Math.max(this.leftCornerY, this.rightCornerY)
+
+        if(m.x) this.x += m.x * lineSpeed.move
+        if(m.y) this.y += m.y * lineSpeed.move
+        // console.log(minX < map[this.areaOn].x - map[this.areaOn].safeZoneWidth, this.x - minX)
+        if(minX < map[this.areaOn].x - map[this.areaOn].safeZoneWidth) this.x = map[this.areaOn].x - map[this.areaOn].safeZoneWidth + this.x - minX
+        if(maxX > map[this.areaOn].x + map[this.areaOn].width + map[this.areaOn].safeZoneWidth) this.x = map[this.areaOn].x + map[this.areaOn].width + map[this.areaOn].safeZoneWidth + this.x - maxX
+        if(minY < map[this.areaOn].y) this.y = map[this.areaOn].y + this.y - minY
+        if(maxY > map[this.areaOn].y + map[this.areaOn].height) this.y = map[this.areaOn].y + map[this.areaOn].height
+    }
+
+    collision(map){
+        for (const enemy of map[this.areaOn].enemies){
             if (enemy.collision) {
+                this.alive = false
                 this.moveSpeed = 0
             }
         }

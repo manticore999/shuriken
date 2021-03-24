@@ -25,7 +25,6 @@ app.ws('/', (ws, req) => {
     let m = move(pressedKeys)
     players[clientId] = msg.player
     ws.send(JSON.stringify({input: m, players: players, client: clientId}))
-    // console.log(players)
   })
 
   players.push(player)
